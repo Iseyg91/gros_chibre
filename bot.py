@@ -2,6 +2,7 @@ import os
 import time
 import discord
 from discord.ext import commands
+from keep_alive import keep_alive
 
 # --- Configuration du bot ---
 intents = discord.Intents.all()
@@ -15,4 +16,5 @@ async def on_ready():
 
 # --- Lancement du bot ---
 token = os.environ['ETHERYA']
+keep_alive()  # Lance le petit serveur Flask pour maintenir le service en ligne
 bot.run(token)
