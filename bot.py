@@ -1,6 +1,6 @@
 import discord
 from discord.ext import commands
-
+import os
 token = os.environ['ETHERYA']
 intents = discord.Intents.all()
 start_time = time.time()
