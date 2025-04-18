@@ -100,47 +100,45 @@ async def send_error(channel):
 	embed = discord.Embed(title="Error.", description="Internal Error, call admin.", color=0xff0000)
 	await channel.send(embed=embed)
 	return
-
-
-# ~~~ set custom status ~~~
-@client.event
+@bot.event
 async def on_ready():
-	activity = discord.Game(name=f"My default prefix is <{BOT_PREFIX}>")
-	await client.change_presence(status=discord.Status.online, activity=activity)
-	# log_channel = 807057317396217947 # in your server, select a channel you want log info to be sent to
-									# rightclick and copy id. put the id here. it should look like this : 807057317396217947
-	"""
-	NEED LOG CHANNEL ID
-	"""
-	# channel = client.get_channel(log_channel)
-	# await channel.send("running")
+    print(f"✅ Le bot {bot.user} est maintenant connecté ! (ID: {bot.user.id})")
 
+    # Mise à jour du statut avec l'activité de stream "Etherya"
+    activity = discord.Activity(type=discord.ActivityType.streaming, name="Etherya", url="https://www.twitch.tv/tonstream")
+    await bot.change_presence(activity=activity, status=discord.Status.online)
 
-	# check json, putting it here because has to be in a async function
-	check_status = await db_handler.check_json()
+    print(f"🎉 **{bot.user}** est maintenant connecté et affiche son activité de stream avec succès !")
 
-	if check_status == "error":
-		# channel = client.get_channel(log_channel)
-		color = discord_error_rgb_code
-		embed = discord.Embed(description=f"Critical error. JSON file is corrupted or has missing variables.\n\n"
-										# f"`Error` code : {error_info}`\n" # -- Possibly to add
-										  f" Please contact an admin or delete the JSON database, but do a backup before -\n"
-										  f"this will result in re-creating the default config but will also **delete all user data**\n\n", color=color)
-		embed.set_author(name="UnbelievaBoat-Python Bot", icon_url="https://blog.learningtree.com/wp-content/uploads/2017/01/error-handling.jpg")
-		embed.set_footer(text="tip: default config at https://github.com/NoNameSpecified/UnbelievaBoat-Python-Bot")
-		# await channel.send(embed=embed)
-		quit()
+    # Afficher les commandes chargées
+    print("📌 Commandes disponibles 😊")
+    for command in bot.commands:
+        print(f"- {command.name}")
 
-	db_handler.get_currency_symbol()
+    try:
+        # Synchroniser les commandes avec Discord
+        synced = await bot.tree.sync()  # Synchronisation des commandes slash
+        print(f"✅ Commandes slash synchronisées : {[cmd.name for cmd in synced]}")
+    except Exception as e:
+        print(f"❌ Erreur de synchronisation des commandes slash : {e}")
 
-"""
+# Gestion des erreurs globales pour toutes les commandes
+@bot.event
+async def on_error(event, *args, **kwargs):
+    print(f"Une erreur s'est produite : {event}")
+    embed = discord.Embed(
+        title="❗ Erreur inattendue",
+        description="Une erreur s'est produite lors de l'exécution de la commande. Veuillez réessayer plus tard.",
+        color=discord.Color.red()
+    )
+    await args[0].response.send_message(embed=embed)
 
-USER-BOT INTERACTION
-
-"""
 not_done = False
-@client.event
+@bot.event
 async def on_message(message):
+    # Ignorer les messages du bot lui-même
+    if message.author.bot:
+        return
 	"""
 	start general variable definition
 	"""
