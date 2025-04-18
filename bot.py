@@ -1,58 +1,44 @@
-
-# --------- Info and general informations -----------
-
-"""
-INFO
-  Official Repo: https://github.com/NoNameSpecified/UnbelievaBoat-Python-Bot
-
-	This is a discord bot written in python, designed to copy some of Unbelievaboat's functions,
-	  but add custom stuff to it (e.g no balance limit, automatic balance increase etc)
-
-	The Discord things are from the discord API (import discord)
-
-	the databses are stored in database/ and handled by database/__init__.py
-	  that name is chosen to make it something easily importable
-
-	some of these functions and methods are based on another Bot i made, https://github.com/NoNameSpecified/selenor
-"""
-
-# --------- BOT CODE BELOW -----------
-
-
-
-"""
-
-// INIT
-
-"""
-
-# imports
 import discord
+from discord.ext import commands, tasks
+from discord import app_commands, Embed, ButtonStyle, ui
+from discord.ui import Button, View, Select, Modal, TextInput, button
+from discord.ui import Modal, TextInput, Button, View
+from discord.utils import get
+from discord import TextStyle
+from functools import wraps
+import os
+from discord import app_commands, Interaction, TextChannel, Role
+import io
 import random
-from discord.ext.commands import Bot
-# custom database handler
-import database
-from time import sleep
-# check img url
-import requests, asyncio
+import asyncio
+import time
+import re
+import subprocess
+import sys
+import math
+import traceback
+from keep_alive import keep_alive
+from datetime import datetime, timedelta
+from collections import defaultdict, deque
+import pymongo
+from pymongo import MongoClient
+from motor.motor_asyncio import AsyncIOMotorClient
+import psutil
+import pytz
+import platform
+from discord.ui import Select, View
 
 
-# init discord stuff and json handling
-BOT_PREFIX = ("-")  # tupple in case we'd need multiple
-token = "ETHERYA"  # add your own token
-# emojis
-emoji_worked = "✅"
-emoji_error = "❌"
-discord_error_rgb_code = discord.Color.from_rgb(239, 83, 80)
+token = os.environ['ETHERYA']
 intents = discord.Intents.all()
-client = Bot(command_prefix=BOT_PREFIX, intents=intents)  # init bot
-db_handler = database.pythonboat_database_handler(client)  # ("database.json")
+start_time = time.time()
+bot = commands.Bot(command_prefix="-", intents=intents, help_command=None)
 
-"""
-
-// GLOBAL FUNCTIONS
-
-"""
+# Connexion MongoDB
+mongo_uri = os.getenv("MONGO_DB")  # URI de connexion à MongoDB
+print("Mongo URI :", mongo_uri)  # Cela affichera l'URI de connexion (assure-toi de ne pas laisser cela en prod)
+client = MongoClient(mongo_uri)
+db = client['Cass-Eco2']
 
 async def get_user_input(message, default_spell=True):
 	print("Awaiting User Entry")
