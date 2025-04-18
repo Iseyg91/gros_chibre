@@ -1,33 +1,5 @@
 import discord
-from discord.ext import commands, tasks
-from discord import app_commands, Embed, ButtonStyle, ui
-from discord.ui import Button, View, Select, Modal, TextInput, button
-from discord.ui import Modal, TextInput, Button, View
-from discord.utils import get
-from discord import TextStyle
-from functools import wraps
-import os
-from discord import app_commands, Interaction, TextChannel, Role
-import io
-import random
-import asyncio
-import time
-import re
-import subprocess
-import sys
-import math
-import traceback
-from keep_alive import keep_alive
-from datetime import datetime, timedelta
-from collections import defaultdict, deque
-import pymongo
-from pymongo import MongoClient
-from motor.motor_asyncio import AsyncIOMotorClient
-import psutil
-import pytz
-import platform
-from discord.ui import Select, View
-
+from discord.ext import commands
 
 token = os.environ['ETHERYA']
 intents = discord.Intents.all()
